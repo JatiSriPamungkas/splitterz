@@ -1,6 +1,5 @@
 import camelcase from "camelcase";
 import { Eye, EyeClosed } from "lucide-react";
-import React, { useState } from "react";
 
 interface InputProps {
     label: string;
@@ -36,6 +35,7 @@ export default function Input({
                             placeholder={placeholder}
                             value={value}
                             onChange={onChange}
+                            required
                             className="w-full focus:outline-0"
                         />
 
@@ -54,6 +54,7 @@ export default function Input({
                         placeholder={placeholder}
                         value={value}
                         onChange={onChange}
+                        required
                         className="border rounded-sm font-normal px-4 py-2"
                     />
                 )}
