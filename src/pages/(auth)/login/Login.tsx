@@ -1,83 +1,97 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import Input from "../components/Input";
+import { Link } from "react-router-dom";
+
+interface LoginFormData {
+    email: string;
+    password: string;
+}
 
 export default function Login() {
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
+    const [loginFormData, setLoginFormData] = useState<LoginFormData>({
+        email: "",
+        password: "",
+    });
+    const [showPassword, setShowPassword] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleNameOnChange = (e) => {
-    setName(e.target.value);
-    console.log(name);
-  };
+    const handleLoginOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setLoginFormData((prev) => ({ ...prev, [name]: value }));
+    };
 
-  const handlePasswordOnChange = (e) => {
-    setPassword(e.target.value);
-    console.log(password);
-  };
+    const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(`Name: ${name}`);
-    console.log(`Password: ${password}`);
-  };
+        setIsLoading(true);
 
-  return (
-    <>
-      <div className="flex flex-col gap-8 items-center">
-        <h1 className="w-full font-bold text-2xl font-montserrat text-center">
-          Welcome back to <span className="text-blue-600">Splitterz!</span>
-        </h1>
+        const payload = {
+            ...loginFormData,
+            email: loginFormData.email.trim().toLowerCase(),
+        };
 
-        <form
-          onSubmit={handleSubmit}
-          className="w-full flex flex-col gap-4 font-poppins"
-        >
-          <div className="flex flex-col gap-2 font-semibold">
-            <label htmlFor="name">Name</label>
-            <input
-              type="text"
-              id="name"
-              placeholder="John Doe"
-              value={name}
-              onChange={handleNameOnChange}
-              className="border rounded-sm font-normal px-4 py-2"
-            />
-          </div>
+        console.log(payload);
 
-          <div className="flex flex-col gap-2 font-semibold">
-            <label htmlFor="password">Password</label>
-            <input
-              type="text"
-              id="password"
-              placeholder="******"
-              value={password}
-              onChange={handlePasswordOnChange}
-              className="border rounded-sm font-normal px-4 py-2"
-            />
-          </div>
+        setTimeout(() => {
+            console.log("Pesan ini muncul setelah 3 detik!");
+            setIsLoading(false);
+        }, 3000);
+    };
 
-          <div className="flex gap-2">
-            <input
-              type="checkbox"
-              id="remember-me"
-              className="border rounded-sm"
-            />
-            <label htmlFor="remember-me">Remember me</label>
-          </div>
+    return (
+        <>
+            <div className="flex flex-col gap-8 items-center py-4">
+                <h1 className="w-full flex flex-col font-bold text-2xl font-montserrat text-center">
+                    Welcome back to{" "}
+                    <span className="text-blue-600">Splitterz!</span>
+                </h1>
 
-          <button
-            type="submit"
-            className="font-semibold w-full bg-blue-600 text-white rounded-sm h-10"
-          >
-            Login
-          </button>
-        </form>
-        <p>
-          Didn't have account yet?{" "}
-          <span className="underline underline-offset-4 text-blue-600">
-            Register
-          </span>
-        </p>
-      </div>
-    </>
-  );
+                <form
+                    onSubmit={handleSubmit}
+                    className="w-full flex flex-col gap-4 font-poppins"
+                >
+                    <Input
+                        label="Email"
+                        type="email"
+                        placeholder="johndoe@gmail.com"
+                        value={loginFormData.email}
+                        onChange={handleLoginOnChange}
+                        setShowPassword={setShowPassword}
+                    />
+                    <Input
+                        label="Password"
+                        type="password"
+                        placeholder="********"
+                        value={loginFormData.password}
+                        onChange={handleLoginOnChange}
+                        showPassword={showPassword}
+                        setShowPassword={setShowPassword}
+                    />
+
+                    <div className="flex gap-2">
+                        <input
+                            type="checkbox"
+                            id="remember-me"
+                            className="border rounded-sm"
+                        />
+                        <label htmlFor="remember-me">Remember me</label>
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={isLoading}
+                        className={`font-semibold w-full bg-blue-600 text-white rounded-sm h-10 ${isLoading ? "bg-gray-300" : ""}`}
+                    >
+                        {isLoading ? "Loading..." : "Login"}
+                    </button>
+                </form>
+                <p>
+                    Didn't have account yet?{" "}
+                    <span className="underline underline-offset-4 text-blue-600">
+                        <Link to="/register">Register</Link>
+                    </span>
+                </p>
+            </div>
+        </>
+    );
 }
